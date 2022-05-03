@@ -14,7 +14,7 @@ public struct DecodableLabel: DecodableView {
     private let lineLimit: Int?
     private let fontColor: Color?
     private var viewModifier: DefaultDecodableViewModifier?
-    
+
     private var font: Font? {
         guard let fontSize = fontSize else {
             return .system(.body)

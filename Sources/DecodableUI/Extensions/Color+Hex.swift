@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// swiftlint:disable identifier_name
+
 public extension Color {
 
     init(hex: String) {
@@ -35,3 +37,5 @@ public extension Color {
     }
 
 }
+
+// swiftlint:enable identifier_name

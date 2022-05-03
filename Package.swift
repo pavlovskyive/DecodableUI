@@ -7,13 +7,13 @@ let package = Package(
     name: "DecodableUI",
     platforms: [
         .iOS(.v14),
-        .macOS(.v12)
+        .macOS(.v11)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "DecodableUI",
-            targets: ["DecodableUI"]),
+            targets: ["DecodableUI"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -27,6 +27,6 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "DecodableUITests",
-            dependencies: ["DecodableUI"]),
+            dependencies: ["DecodableUI"])
     ]
 )
