@@ -7,66 +7,37 @@
 
 import SwiftUI
 
-// TODO: Try to separate View logics from DecodableView logic. (DecodableStack: View, but extension to DecodableView)
-
-public struct DecodableStack: DecodableView {
+public struct DecodableStack: View {
 
     private let direction: Direction
     private let spacing: CGFloat?
-    private var alignment = Alignment.center
+    private let alignment: Alignment
 
     private let elements: [AnyView]
 
     private let viewModifier: DefaultDecodableViewModifier?
 
-    public var anyView: AnyView {
-        AnyView(body)
-    }
-
-    public init?(from decoder: Decoder?, viewResolver: DecodableViewResolver) {
-        guard let container = try? decoder?.container(keyedBy: CodingKeys.self),
-              let direction = try? container.decode(Direction.self, forKey: .direction),
-              let configurations = try? container.decode([DecodableViewConfiguration].self, forKey: .elements) else {
-                  return nil
-              }
-        self.direction = direction
-        self.elements = configurations.compactMap { configuration in
-            viewResolver.resolve(from: configuration)?.anyView
-        }
-        if let alignment = try? container.decode(Alignment.self, forKey: .alignment) {
-            self.alignment = alignment
-        }
-        self.spacing = try? container.decode(CGFloat.self, forKey: .spacing)
-
-        self.viewModifier = DefaultDecodableViewModifier(from: decoder)
-    }
-
-}
-
-private extension DecodableStack {
-
-    var body: some View {
+    public var body: some View {
         stack.optionalModifier(viewModifier)
     }
 
-    @ViewBuilder
-    var stack: some View {
-        if direction == .horizontal {
-            HStack(alignment: alignment.verticalAlignment, spacing: spacing) { content }
-        } else {
-            VStack(alignment: alignment.horizontalAlignment, spacing: spacing) { content }
-        }
-    }
-
-    var content: some View {
-        ForEach(0..<elements.count, id: \.self) { index in
-            elements[index]
-        }
+    public init(
+        direction: Direction,
+        spacing: CGFloat? = nil,
+        alignment: Alignment? = nil,
+        viewModifier: DefaultDecodableViewModifier? = nil,
+        elements: [AnyView]
+    ) {
+        self.direction = direction
+        self.spacing = spacing
+        self.alignment = alignment ?? .center
+        self.viewModifier = viewModifier
+        self.elements = elements
     }
 
 }
 
-private extension DecodableStack {
+public extension DecodableStack {
 
     enum Direction: String, Decodable {
         case vertical
@@ -105,7 +76,58 @@ private extension DecodableStack {
 
     }
 
-    enum CodingKeys: String, CodingKey {
+}
+
+private extension DecodableStack {
+
+    @ViewBuilder
+    private var stack: some View {
+        if direction == .horizontal {
+            HStack(alignment: alignment.verticalAlignment, spacing: spacing) { content }
+        } else {
+            VStack(alignment: alignment.horizontalAlignment, spacing: spacing) { content }
+        }
+    }
+
+    private var content: some View {
+        ForEach(elements.indices, id: \.self) { index in
+            elements[index]
+        }
+    }
+
+}
+
+extension DecodableStack: DecodableView {
+
+    public var anyView: AnyView {
+        AnyView(body)
+    }
+
+    public init?(from decoder: Decoder?, viewResolver: DecodableViewResolver) {
+        guard let container = try? decoder?.container(keyedBy: CodingKeys.self),
+              let direction = try? container.decode(Direction.self, forKey: .direction),
+              let configurations = try? container.decode([DecodableViewConfiguration].self, forKey: .elements) else {
+                  return nil
+              }
+
+        let elements = configurations.compactMap { configuration in
+            viewResolver.resolve(from: configuration)?.anyView
+        }
+        let alignment = try? container.decode(Alignment.self, forKey: .alignment)
+        let spacing = try? container.decode(CGFloat.self, forKey: .spacing)
+
+        let viewModifier = DefaultDecodableViewModifier(from: decoder)
+
+        self.init(
+            direction: direction,
+            spacing: spacing,
+            alignment: alignment,
+            viewModifier: viewModifier,
+            elements: elements
+        )
+    }
+
+    private enum CodingKeys: String, CodingKey {
         case direction
         case alignment
         case spacing

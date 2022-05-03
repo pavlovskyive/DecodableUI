@@ -16,7 +16,7 @@ struct AsyncImage<Content: View>: View {
         content(loader.phase)
             .onAppear(perform: loader.load)
     }
-    
+
     init(url: URL, @ViewBuilder content: @escaping (AsyncImagePhase) -> Content) {
         _loader = StateObject(wrappedValue: ImageLoader(url: url))
         self.content = content

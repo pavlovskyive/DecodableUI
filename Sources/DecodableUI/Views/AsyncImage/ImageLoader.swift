@@ -60,9 +60,9 @@ extension ImageLoader {
 }
 
 private extension ImageLoader {
-    
+
     enum LoaderError: Error {
         case invalidData
     }
-    
+
 }

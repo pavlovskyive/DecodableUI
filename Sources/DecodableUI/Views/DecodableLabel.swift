@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct DecodableLabel: DecodableView {
+public struct DecodableLabel: View {
 
     private let text: String
     private let fontSize: CGFloat?
@@ -23,15 +23,35 @@ public struct DecodableLabel: DecodableView {
         return .system(size: fontSize)
     }
 
+    public var body: some View {
+        Text(text)
+            .font(font)
+            .minimumScaleFactor(0.7)
+            .lineLimit(lineLimit)
+            .foregroundColor(fontColor ?? .primary)
+            .optionalModifier(viewModifier)
+    }
+
+    public init(
+        text: String,
+        fontSize: CGFloat? = nil,
+        lineLimit: Int? = nil,
+        fontColor: Color? = nil,
+        viewModifier: DefaultDecodableViewModifier? = nil
+    ) {
+        self.text = text
+        self.fontSize = fontSize
+        self.lineLimit = lineLimit
+        self.fontColor = fontColor
+        self.viewModifier = viewModifier
+    }
+
+}
+
+extension DecodableLabel: DecodableView {
+
     public var anyView: AnyView {
-        AnyView(
-            Text(text)
-                .font(font)
-                .minimumScaleFactor(0.7)
-                .lineLimit(lineLimit)
-                .foregroundColor(fontColor ?? .primary)
-                .optionalModifier(viewModifier)
-        )
+        AnyView(body)
     }
 
     public init?(from decoder: Decoder?, viewResolver: DecodableViewResolver) {
@@ -39,20 +59,23 @@ public struct DecodableLabel: DecodableView {
               let text = try? container.decode(String.self, forKey: .text) else {
             return nil
         }
-        self.text = text
 
-        self.fontSize = try? container.decode(CGFloat.self, forKey: .fontSize)
-        self.lineLimit = try? container.decode(Int.self, forKey: .lineLimit)
-        self.fontColor = try? container.decodeColorFromHexString(forKey: .fontColor)
+        let fontSize = try? container.decode(CGFloat.self, forKey: .fontSize)
+        let lineLimit = try? container.decode(Int.self, forKey: .lineLimit)
+        let fontColor = try? container.decodeColorFromHexString(forKey: .fontColor)
 
-        viewModifier = DefaultDecodableViewModifier(from: decoder)
+        let viewModifier = DefaultDecodableViewModifier(from: decoder)
+
+        self.init(
+            text: text,
+            fontSize: fontSize,
+            lineLimit: lineLimit,
+            fontColor: fontColor,
+            viewModifier: viewModifier
+        )
     }
 
-}
-
-private extension DecodableLabel {
-
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case text
         case fontSize
         case lineLimit
