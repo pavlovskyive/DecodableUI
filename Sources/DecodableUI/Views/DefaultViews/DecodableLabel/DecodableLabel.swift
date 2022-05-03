@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-public struct DecodableLabel: View {
+public struct DecodableLabel<Modifier: DecodableViewModifier>: View {
 
     private let text: String
     private let fontSize: CGFloat?
     private let lineLimit: Int?
     private let fontColor: Color?
-    private var viewModifier: DefaultDecodableViewModifier?
+    private var viewModifier: Modifier?
 
     private var font: Font? {
         guard let fontSize = fontSize else {
@@ -37,7 +37,7 @@ public struct DecodableLabel: View {
         fontSize: CGFloat? = nil,
         lineLimit: Int? = nil,
         fontColor: Color? = nil,
-        viewModifier: DefaultDecodableViewModifier? = nil
+        viewModifier: Modifier?
     ) {
         self.text = text
         self.fontSize = fontSize

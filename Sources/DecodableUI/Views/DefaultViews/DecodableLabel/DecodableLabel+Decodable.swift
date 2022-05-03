@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension DecodableLabel: DecodableView {
+extension DecodableLabel: DecodableView where Modifier: DecodableViewModifier {
 
     public var anyView: AnyView {
         AnyView(body)
@@ -23,7 +23,7 @@ extension DecodableLabel: DecodableView {
         let lineLimit = try? container.decode(Int.self, forKey: .lineLimit)
         let fontColor = try? container.decodeColorFromHexString(forKey: .fontColor)
 
-        let viewModifier = DefaultDecodableViewModifier(from: decoder)
+        let viewModifier = Modifier(from: decoder)
 
         self.init(
             text: text,

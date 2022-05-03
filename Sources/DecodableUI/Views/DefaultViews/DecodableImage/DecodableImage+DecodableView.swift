@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension DecodableImage: DecodableView {
+extension DecodableImage: DecodableView where Modifier: DecodableViewModifier {
 
     public var anyView: AnyView {
         AnyView(
@@ -21,7 +21,7 @@ extension DecodableImage: DecodableView {
         let url = try? container?.decode(URL.self, forKey: .url)
         let systemName = try? container?.decode(String.self, forKey: .systemName)
 
-        let viewModifier = DefaultDecodableViewModifier(from: decoder)
+        let viewModifier = Modifier(from: decoder)
 
         self.init(
             url: url,

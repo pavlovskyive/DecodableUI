@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-public struct DecodableImage: View {
+public struct DecodableImage<Modifier: ViewModifier>: View {
 
     private let url: URL?
     private let systemName: String?
 
-    private let viewModifier: DefaultDecodableViewModifier?
+    private let viewModifier: Modifier?
 
     public var body: some View {
         image
@@ -23,7 +23,7 @@ public struct DecodableImage: View {
     public init(
         url: URL? = nil,
         systemName: String? = nil,
-        viewModifier: DefaultDecodableViewModifier? = nil
+        viewModifier: Modifier? = nil
     ) {
         self.url = url
         self.systemName = systemName

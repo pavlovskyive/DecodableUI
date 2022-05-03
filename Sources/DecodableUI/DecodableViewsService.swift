@@ -17,13 +17,13 @@ public class DecodableViewsService {
 
     private var viewsRegistry = [String: DecodableView.Type]()
 
-    public init(viewTypes: [DecodableView.Type] = []) {
+    public init(viewTypes: [String: DecodableView.Type] = [:]) {
         register(viewTypes)
     }
 
-    public func register(_ viewTypes: [DecodableView.Type]) {
+    public func register(_ viewTypes: [String: DecodableView.Type]) {
         for type in viewTypes {
-            viewsRegistry["\(type)"] = type
+            viewsRegistry[type.key] = type.value
         }
     }
 

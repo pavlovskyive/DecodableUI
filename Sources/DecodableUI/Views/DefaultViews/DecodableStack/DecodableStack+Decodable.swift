@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension DecodableStack: DecodableView {
+extension DecodableStack: DecodableView where Modifier: DecodableViewModifier {
 
     public var anyView: AnyView {
         AnyView(body)
@@ -26,7 +26,7 @@ extension DecodableStack: DecodableView {
         let alignment = try? container.decode(Alignment.self, forKey: .alignment)
         let spacing = try? container.decode(CGFloat.self, forKey: .spacing)
 
-        let viewModifier = DefaultDecodableViewModifier(from: decoder)
+        let viewModifier = Modifier(from: decoder)
 
         self.init(
             direction: direction,

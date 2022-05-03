@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct DecodableStack: View {
+public struct DecodableStack<Modifier: ViewModifier>: View {
 
     private let direction: Direction
     private let spacing: CGFloat?
@@ -15,7 +15,7 @@ public struct DecodableStack: View {
 
     private let elements: [AnyView]
 
-    private let viewModifier: DefaultDecodableViewModifier?
+    private let viewModifier: Modifier?
 
     public var body: some View {
         stack.optionalModifier(viewModifier)
@@ -25,7 +25,7 @@ public struct DecodableStack: View {
         direction: Direction,
         spacing: CGFloat? = nil,
         alignment: Alignment? = nil,
-        viewModifier: DefaultDecodableViewModifier? = nil,
+        viewModifier: Modifier? = nil,
         elements: [AnyView]
     ) {
         self.direction = direction

@@ -7,7 +7,13 @@
 
 import SwiftUI
 
-public struct DefaultDecodableViewModifier: ViewModifier {
+public protocol DecodableViewModifier: ViewModifier {
+
+    init?(from decoder: Decoder?)
+
+}
+
+public struct DefaultViewModifier: ViewModifier {
 
     private let background: Color
     private let cornerRadius: CGFloat
@@ -41,7 +47,7 @@ public struct DefaultDecodableViewModifier: ViewModifier {
 
 }
 
-extension DefaultDecodableViewModifier {
+extension DefaultViewModifier: DecodableViewModifier {
 
     enum CodingKeys: String, CodingKey {
         case background
@@ -51,7 +57,7 @@ extension DefaultDecodableViewModifier {
         case height
     }
 
-    init?(from decoder: Decoder?) {
+    public init?(from decoder: Decoder?) {
         guard let container = try? decoder?.container(keyedBy: CodingKeys.self) else {
             return nil
         }
