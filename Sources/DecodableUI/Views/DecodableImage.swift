@@ -21,27 +21,7 @@ public struct DecodableImage: DecodableView {
                 .optionalModifier(viewModifier)
         )
     }
-
-    @ViewBuilder
-    private var image: some View {
-        if let url = url {
-            AsyncImage(url: url) {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .padding()
-            }
-        } else {
-            systemImage
-        }
-    }
-
-    @ViewBuilder
-    private var systemImage: some View {
-        if let systemName = systemName {
-            Image(systemName: systemName)
-        }
-    }
-
+    
     public init?(from decoder: Decoder?, viewResolver: DecodableViewResolver) {
         let container = try? decoder?.container(keyedBy: CodingKeys.self)
 
@@ -51,6 +31,44 @@ public struct DecodableImage: DecodableView {
         viewModifier = DefaultDecodableViewModifier(from: decoder)
     }
 
+}
+
+private extension DecodableImage {
+    
+    @ViewBuilder
+    var image: some View {
+        if let url = url {
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .image(let image):
+                    image.resizable()
+                case .error:
+                    errorImage
+                case .loading:
+                    loadingView
+                }
+            }
+        } else {
+            systemImage
+        }
+    }
+    
+    @ViewBuilder
+    var systemImage: some View {
+        if let systemName = systemName {
+            Image(systemName: systemName)
+        }
+    }
+    
+    var errorImage: some View {
+        Image(systemName: "exclamationmark.triangle")
+    }
+    
+    var loadingView: some View {
+        ProgressView()
+            .progressViewStyle(.circular)
+    }
+    
 }
 
 private extension DecodableImage {

@@ -7,30 +7,19 @@
 
 import SwiftUI
 
-struct AsyncImage<Placeholder: View>: View {
+struct AsyncImage<Content: View>: View {
 
     @StateObject private var loader: ImageLoader
-    private let placeholder: Placeholder
-
-    init(url: URL, @ViewBuilder placeholder: () -> Placeholder) {
-        self.placeholder = placeholder()
-        _loader = StateObject(wrappedValue: ImageLoader(url: url))
-    }
+    private let content: (AsyncImagePhase) -> Content
 
     var body: some View {
-        content
+        content(loader.phase)
             .onAppear(perform: loader.load)
     }
-
-    private var content: some View {
-        Group {
-            if loader.image != nil {
-                Image(uiImage: loader.image!)
-                    .resizable()
-            } else {
-                placeholder
-            }
-        }
+    
+    init(url: URL, @ViewBuilder content: @escaping (AsyncImagePhase) -> Content) {
+        _loader = StateObject(wrappedValue: ImageLoader(url: url))
+        self.content = content
     }
 
 }

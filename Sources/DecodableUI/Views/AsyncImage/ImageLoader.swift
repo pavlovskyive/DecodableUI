@@ -11,7 +11,7 @@ import Foundation
 
 class ImageLoader: ObservableObject {
 
-    @Published var image: UIImage?
+    @Published var phase: AsyncImagePhase = .loading
     private let url: URL
 
     private var cancellable: AnyCancellable?
@@ -24,16 +24,45 @@ class ImageLoader: ObservableObject {
         cancel()
     }
 
+}
+
+extension ImageLoader {
+
     func load() {
         cancellable = URLSession.shared.dataTaskPublisher(for: url)
             .map { UIImage(data: $0.data) }
-            .replaceError(with: nil)
+            .tryMap {
+                guard let image = $0 else {
+                    throw LoaderError.invalidData
+                }
+                return image
+            }
+            .map {
+                Image(uiImage: $0)
+            }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.image = $0 }
+            .sink { [weak self] completion in
+                switch completion {
+                case .failure(let error):
+                    self?.phase = .error(error)
+                default:
+                    return
+                }
+            } receiveValue: { [weak self] in
+                self?.phase = .image($0)
+            }
     }
 
     func cancel() {
         cancellable?.cancel()
     }
 
+}
+
+private extension ImageLoader {
+    
+    enum LoaderError: Error {
+        case invalidData
+    }
+    
 }
