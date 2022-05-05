@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension DecodableStack: DecodableView where Modifier: DecodableViewModifier {
+extension StackView: DecodableView where Modifier: DecodableViewModifier {
 
     public var anyView: AnyView {
         AnyView(body)

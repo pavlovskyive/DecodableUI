@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension DecodableImage: DecodableView where Modifier: DecodableViewModifier {
+extension ImageView: DecodableView where Modifier: DecodableViewModifier {
 
     public var anyView: AnyView {
         AnyView(

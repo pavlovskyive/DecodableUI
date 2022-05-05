@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct DecodableStack<Modifier: ViewModifier>: View {
+public struct StackView<Modifier: ViewModifier>: View {
 
     private let direction: Direction
     private let spacing: CGFloat?
@@ -37,7 +37,7 @@ public struct DecodableStack<Modifier: ViewModifier>: View {
 
 }
 
-public extension DecodableStack {
+public extension StackView {
 
     enum Direction: String, Decodable {
         case vertical
@@ -78,7 +78,7 @@ public extension DecodableStack {
 
 }
 
-private extension DecodableStack {
+private extension StackView {
 
     @ViewBuilder
     private var stack: some View {

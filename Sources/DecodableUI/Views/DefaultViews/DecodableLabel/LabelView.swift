@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct DecodableLabel<Modifier: DecodableViewModifier>: View {
+public struct LabelView<Modifier: DecodableViewModifier>: View {
 
     private let text: String
     private let fontSize: CGFloat?

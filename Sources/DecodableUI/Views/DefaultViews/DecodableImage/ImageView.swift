@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct DecodableImage<Modifier: ViewModifier>: View {
+public struct ImageView<Modifier: ViewModifier>: View {
 
     private let url: URL?
     private let systemName: String?
@@ -32,7 +32,7 @@ public struct DecodableImage<Modifier: ViewModifier>: View {
 
 }
 
-private extension DecodableImage {
+private extension ImageView {
 
     @ViewBuilder
     var image: some View {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension DecodableLabel: DecodableView where Modifier: DecodableViewModifier {
+extension LabelView: DecodableView where Modifier: DecodableViewModifier {
 
     public var anyView: AnyView {
         AnyView(body)
